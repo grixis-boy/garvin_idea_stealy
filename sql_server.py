@@ -1,8 +1,10 @@
 # %%
 from datetime import date
-import sqlite3
 from pathlib import Path
 import pandas as pd
+
+# %%
+
 
 # %%
 class LoginError(Exception):
@@ -14,6 +16,11 @@ class UserError(Exception):
 
 
 def create_user_table(conn: sqlite3.Connection) -> None:
+    """Creates an empty table to store user data in, if one doesn't exist
+
+    Args:
+        conn (sqlite3.Connection): connection to the database the table will be stored in.
+    """
     command = """
     create table if not exists users (
         id integer primary key,
@@ -28,7 +35,7 @@ def create_user_table(conn: sqlite3.Connection) -> None:
     cur.execute(command)
 
 
-def create_password_table(conn: sqlite3.Connection):
+def create_password_table(conn):
     command = """
     create table if not exists passwords (
         id integer primary key,
@@ -39,7 +46,7 @@ def create_password_table(conn: sqlite3.Connection):
     cur.execute(command)
 
 
-def create_exercise_table(conn: sqlite3.Connection):
+def create_exercise_table(conn):
     command = """
     create table if not exists exercises (
         exercise_id integer primary key,
@@ -54,7 +61,7 @@ def create_exercise_table(conn: sqlite3.Connection):
 
 
 def register_user(
-    conn: sqlite3.Connection,
+    conn,
     user_id: int,
     first_name: str,
     last_name: str,
@@ -77,9 +84,7 @@ def register_user(
     conn.commit()
 
 
-def register_exercise(
-    conn: sqlite3.Connection, user_id: int, exercise: str, reps: int, weight: int
-):
+def register_exercise(conn, user_id: int, exercise: str, reps: int, weight: int):
 
     cur = conn.cursor()
 
@@ -91,7 +96,7 @@ def register_exercise(
     conn.commit()
 
 
-def login(user_id: str, password: str, conn: sqlite3.Connection):
+def login(user_id: str, password: str, conn):
     cur = conn.cursor()
 
     try:
@@ -132,7 +137,7 @@ def main():
         #     birth_date=date(year=1994, month=10, day=31),
         #     email="mattydirwin@gmail.com",
         #     password=987,
-        # )'
+        # )
 
         while True:
             u_id = input("user_id: ")
