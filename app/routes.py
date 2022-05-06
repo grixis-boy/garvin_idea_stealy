@@ -1,23 +1,23 @@
+from flask import render_template, flash, redirect, url_for
 from app import app
+from app.forms import LoginForm
 
 
 @app.route("/")
 @app.route("/index")
 def index():
     user = {"first_name": "Matthew", "last_name": "Irwin"}
-    return (
-        """<html>
-    <head>
-        <title>Home Page - Microblog</title>
-    </head>
-    <body>
-        <h1>Hello, """
-        + user["first_name"]
-        + " "
-        + user["last_name"]
-        + """!</h1>
-    </body>
-</html>
-    """
-    )
-    return "Hello, World!"
+    posts = [
+        {"author": {"username": "John"}, "body": "Beautiful day in Portland!"},
+        {"author": {"username": "Susan"}, "body": "The Avengers movie was so cool!"},
+    ]
+    return render_template("index.html", title="Home", user=user, posts=posts)
+
+
+@app.route("/login", methods=["GET", "POST"])
+def login():
+    form = LoginForm()
+    if form.validate_on_submit():
+        flash(f"Login requested for user {form.first_name.data} {form.last_name.data}")
+        return redirect(url_for("index"))
+    return render_template("login.html", title="Sign In", form=form)
